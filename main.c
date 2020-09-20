@@ -1,4 +1,4 @@
-#include <stdio.h>
+п»ї#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
@@ -71,7 +71,7 @@ int test_str_3(char  str_1[MAX_STRING_SIZE], char  str_2[MAX_STRING_SIZE]) {
 }
 void SortStrings(char strings[][MAX_STRING_SIZE], int (*compareStringsFunction)(char*, char*)) {
 
-	// быстрая сортировка двумерного массива строк
+	// Р±С‹СЃС‚СЂР°СЏ СЃРѕСЂС‚РёСЂРѕРІРєР° РґРІСѓРјРµСЂРЅРѕРіРѕ РјР°СЃСЃРёРІР° СЃС‚СЂРѕРє
 	int k = 0;
 	char  temp = 0;
 	int f = 1;
@@ -98,7 +98,7 @@ int main() {
 	setlocale(LC_ALL, "Rus");
 	unsigned char name[NAME];
 	long long f_len;
-	printf("Ведите имя файла:");
+	printf("Р’РµРґРёС‚Рµ РёРјСЏ С„Р°Р№Р»Р°:");
 	gets_s(name, 255);
 	//scanf_s("%s", name);
 	//printf("%s\n", name);
@@ -113,9 +113,8 @@ int main() {
 	text = (char*)malloc(f_len + 1);
 	fseek(f, 0, SEEK_SET);
 	int st=fread(text, 1, f_len, f);
-	text[st] = '\0';//массив 
+	text[st] = '\0';//РјР°СЃСЃРёРІ 
 	fclose(f);
-	
 	
 	int poz_in_str = 0;
 	int i = 0;
