@@ -6,28 +6,19 @@
 #define MAX_STRING_SIZE 500
 #define NAME 256
 
-void PrintStrings(char strings[][MAX_STRING_SIZE], int K) {
-	for (int i = 0; i <=K; i++) {
-		//printf("%d \t", i);
-		if (strlen(strings[i]) < MAX_STRING_SIZE) {
-			printf("%s", strings[i]);
-		}
-		else {
-			for (int j = 0; j < MAX_STRING_SIZE; j++) {
-				printf("%c", strings[i][j]);
-			}
-		}
+void PrintStrings(char** strings, int K) {
+	for (int i = 0; i <K; i++) {
+		//printf("%d\t", i);
+			printf("%s\n", strings[i]);
+		
 	}
 
 }
-int test_str_1(char  str_1[MAX_STRING_SIZE], char  str_2[MAX_STRING_SIZE]) {
+int test_str_1(char* str_1, char* str_2) {
 	int kol_pr = 0;
-	/*if ((str_1[0] > str_2[0])) {
-		k = 1;
-	}
-	return(k);*/
-	for (int i = 0; i < MAX_STRING_SIZE - kol_pr; i++) {
-		//for (int i = 0; i < 2; i++) {
+	int max_len = max(strlen(str_1), strlen(str_2))+1;
+	for (int i = 0; i < max_len - kol_pr; i++) {
+		
 		if (str_1[i] == '\0') {
 			return(0);
 		}
@@ -46,15 +37,10 @@ int test_str_1(char  str_1[MAX_STRING_SIZE], char  str_2[MAX_STRING_SIZE]) {
 	}
 	return(0);
 }
-int test_str_3(char  str_1[MAX_STRING_SIZE], char  str_2[MAX_STRING_SIZE]) {
+int test_str_3(char*  str_1, char*  str_2) {
 	int kol_pr = 0;
-	int max_1 = strlen(str_1), max_2 = strlen(str_2);
-	if (max_1 > MAX_STRING_SIZE) {
-		max_1 = MAX_STRING_SIZE;
-	}
-	if (max_2 > MAX_STRING_SIZE) {
-		max_2 = MAX_STRING_SIZE;
-	}
+	int max_1 = strlen(str_1);
+	int max_2 = strlen(str_2);
 
 	if (max_1 > max_2) {
 		return(1);
@@ -69,23 +55,26 @@ int test_str_3(char  str_1[MAX_STRING_SIZE], char  str_2[MAX_STRING_SIZE]) {
 
 
 }
-void SortStrings(char strings[][MAX_STRING_SIZE], int (*compareStringsFunction)(char*, char*)) {
+void SortStrings(char** strings, int z) {
 
 	// быстрая сортировка двумерного массива строк
 	int k = 0;
-	char  temp = 0;
+	char*  temp ;
 	int f = 1;
+	int max_1 = 0;
+	int max_2 = 0;
 	do {
 		f = 0;
-		for (int i = 1; i < STRINGS_COUNT; i++) {
+		for (int i = 1; i < z; i++) {
+			max_1 = strlen(strings[i - 1]);
+			max_2 = strlen(strings[i]);
 			//k = test_str(strings[i - 1], strings[i]);
-			k = compareStringsFunction(strings[i - 1], strings[i]);
+			k = test_str_3(strings[i - 1], strings[i]);
 			if (k == 1) {
-				for (int j = 0; j < MAX_STRING_SIZE; j++) {
-					temp = strings[i - 1][j]; // 
-					strings[i - 1][j] = strings[i][j];
-					strings[i][j] = temp;
-				}
+				temp = strings[i - 1]; // 
+				strings[i - 1] = strings[i];
+				strings[i] = temp;
+				
 				f = 1;
 
 			}
@@ -106,51 +95,72 @@ int main() {
 	fopen_s(&f, name, "rt");
 	fseek(f, 0, SEEK_END);
 	f_len = ftell(f);
-	
-	char mass[STRINGS_COUNT][MAX_STRING_SIZE];
-	char* text;
-	
-	text = (char*)malloc(f_len + 1);
 	fseek(f, 0, SEEK_SET);
-	int st=fread(text, 1, f_len, f);
-	text[st] = '\0';//массив 
-	fclose(f);
-	
-	int poz_in_str = 0;
+	//fclose(f);
+	char* estr;
+	char* text;
+	char* buf;
+	char** text_2, temp ;
+	int str_len = 0;
 	int i = 0;
-	for (int j = 0; j < st; j++) {
-		if ((text[j] != '\n')&&(text[j] != '\0')) {
-			mass[i][poz_in_str] = text[j];
-			poz_in_str++;
-		}
-		else{
-			if (text[j] != '\0') {
+	text = (char*)malloc(f_len + 1);
+	text_2 = (char**)malloc(sizeof(buf)*100 );
+
+	while (1)
+	{
+		// Чтение одной строки  из файла
+		estr = fgets(text, f_len, f);
+
+		//Проверка на конец файла или ошибку чтения
+		if (estr == NULL)
+		{
+			// Проверяем, что именно произошло: кончился файл
+			// или это ошибка чтения
+			if (feof(f) != 0)
+			{
+				//Если файл закончился, выводим сообщение о завершении 
+				//чтения и выходим из бесконечного цикла
 				
-				mass[i][poz_in_str++] = '\n';
-				
-				mass[i][poz_in_str] = '\0';
-				
-				i++;
-				poz_in_str = 0;
+				break;
 			}
-		    //mass[i][poz_in_str++] = '\n';
-			//
-			//mass[i][poz_in_str] = '\0';
-			////printf("%s", mass[i]);
-			//i++;
-			//poz_in_str = 0;
-
+			else
+			{
+				//Если при чтении произошла ошибка, выводим сообщение 
+				//об ошибке и выходим из бесконечного цикла
+				printf("\nОшибка чтения из файла\n");
+				exit(1);
+			}
 		}
-	}
-	printf("%d", poz_in_str);
-	if ((poz_in_str!=0)&&(mass[i][poz_in_str-1] != '\n')) {
-
-		mass[i][poz_in_str++] = '\n';
-		mass[i][poz_in_str] = '\0';
+		//Если файл не закончился, и не было ошибки чтения 
+		//выводим считанную строку  на экран
+		str_len = strlen(text);
+		buf = (char*)malloc(str_len+1);
+		
+	
+		strcpy_s(buf, str_len+1, text);
+		//printf("%d  %s",str_len, buf);
+		if (buf[str_len-1]=='\n') {
+			buf[str_len-1] = '\0';
+		}
+		i++;
+		/*if (i > 1) {
+			text_2= (char**)realloc(text_2, sizeof(buf) * i);
+			if (text_2 == NULL)
+			{
+				printf("ошибка выделения памяти \n");
+				exit(1);
+			}
+			
+			
+		}*/
+		text_2[i - 1] = buf;
 		
 	}
 
 	
-	SortStrings(mass, test_str_3);
-	PrintStrings(mass, i);
+	fclose(f);
+
+	SortStrings(text_2,  i);
+	PrintStrings(text_2, i);
+
 }
