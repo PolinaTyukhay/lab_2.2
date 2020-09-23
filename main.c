@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include <sys\stat.h>// для проверки наличия файла 
 #define STRINGS_COUNT   500
 #define MAX_STRING_SIZE 500
 #define NAME 256
@@ -83,12 +84,10 @@ void SortStrings(char** strings, int z) {
 	} while (f == 1);
 
 }
-int main() {
-	setlocale(LC_ALL, "Rus");
-	unsigned char name[NAME];
+void read_file(char* name) {
+printf("имя файла:%s\n", name);
 	long long f_len;
-	printf("Ведите имя файла:");
-	gets_s(name, 255);
+	
 	//scanf_s("%s", name);
 	//printf("%s\n", name);
 	FILE* f;
@@ -97,14 +96,15 @@ int main() {
 	f_len = ftell(f);
 	fseek(f, 0, SEEK_SET);
 	//fclose(f);
-	char* estr;
-	char* text;
-	char* buf;
-	char** text_2, temp ;
+	char* estr; // на строку 
+	char* text; // буфер для чтения строки 
+	char* buf; // буфер для раделения на 
+	char** text_2;
 	int str_len = 0;
+	
 	int i = 0;
 	text = (char*)malloc(f_len + 1);
-	text_2 = (char**)malloc(sizeof(buf)*100 );
+	text_2 = (char**)malloc(sizeof(buf) );
 
 	while (1)
 	{
@@ -143,7 +143,7 @@ int main() {
 			buf[str_len-1] = '\0';
 		}
 		i++;
-		/*if (i > 1) {
+		if (i > 1) {
 			text_2= (char**)realloc(text_2, sizeof(buf) * i);
 			if (text_2 == NULL)
 			{
@@ -152,7 +152,7 @@ int main() {
 			}
 			
 			
-		}*/
+		}
 		text_2[i - 1] = buf;
 		
 	}
@@ -162,5 +162,80 @@ int main() {
 
 	SortStrings(text_2,  i);
 	PrintStrings(text_2, i);
+	for (int d = 0; d < i; d++) {
+		free(text_2[d]);
+	}
+	free(text_2);
+	free(text);
+	
+}
+
+int main(int argc, char** argv) {
+	setlocale(LC_ALL, "Rus");
+	unsigned char name[NAME];
+	struct stat buff; // структура для получения данных файла 
+	if (argv[1]!='\0') {
+		strcpy_s(name, NAME, argv[1]);
+	}
+	else {
+		if (stat("filenames.txt", &buff)==-1)// проверка наличия файла 
+		{
+			printf("Ведите имя файла:");
+	        gets_s(name, 255);
+
+		}
+		else {
+			int f_len = 256;
+			
+			char* estr; // на строку 
+			char text[256]; // для чтения имени файла 
+			int str_len = 0;
+			FILE* f;
+			fopen_s(&f, "filenames.txt", "rt");
+			while (1)
+			{
+				// Чтение одной строки  из файла
+				estr = fgets(text, f_len, f);
+
+				//Проверка на конец файла или ошибку чтения
+				if (estr == NULL)
+				{
+					// Проверяем, что именно произошло: кончился файл
+					// или это ошибка чтения
+					if (feof(f) != 0)
+					{
+						//Если файл закончился, выводим сообщение о завершении 
+						//чтения и выходим из бесконечного цикла
+
+						break;
+					}
+					else
+					{
+						//Если при чтении произошла ошибка, выводим сообщение 
+						//об ошибке и выходим из бесконечного цикла
+						printf("\nОшибка чтения из файла\n");
+						exit(1);
+					}
+				}
+				//Если файл не закончился, и не было ошибки чтения 
+				//выводим считанную строку  на экран
+				str_len = strlen(text);
+				
+
+
+				if (text[str_len - 1] == '\n') {
+					text[str_len - 1] = '\0';
+				}
+				read_file(text);
+			}
+
+			fclose(f);
+			exit(0);
+		}
+		
+
+	}
+	read_file(name);
+	
 
 }
