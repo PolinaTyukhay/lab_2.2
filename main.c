@@ -3,10 +3,11 @@
 #include <string.h>
 #include <locale.h>
 #include <sys\stat.h>// для проверки наличия файла 
-#define STRINGS_COUNT   500
-#define MAX_STRING_SIZE 500
+//#define STRINGS_COUNT   500
+//#define MAX_STRING_SIZE 500
 #define NAME 256
 
+// построчная печать
 void PrintStrings(char** strings, int K) {
 	for (int i = 0; i <K; i++) {
 		//printf("%d\t", i);
@@ -15,7 +16,8 @@ void PrintStrings(char** strings, int K) {
 	}
 
 }
-int test_str_1(char* str_1, char* str_2) {
+// если строки одинаковые по длине , проверить по величине 
+int test_str_1(char* str_1, char* str_2) { 
 	int kol_pr = 0;
 	int max_len = max(strlen(str_1), strlen(str_2))+1;
 	for (int i = 0; i < max_len - kol_pr; i++) {
@@ -38,6 +40,7 @@ int test_str_1(char* str_1, char* str_2) {
 	}
 	return(0);
 }
+// по длине строки 
 int test_str_3(char*  str_1, char*  str_2) {
 	int kol_pr = 0;
 	int max_1 = strlen(str_1);
@@ -56,9 +59,10 @@ int test_str_3(char*  str_1, char*  str_2) {
 
 
 }
+// быстрая сортировка двумерного массива строк
 void SortStrings(char** strings, int z) {
 
-	// быстрая сортировка двумерного массива строк
+	
 	int k = 0;
 	char*  temp ;
 	int f = 1;
@@ -84,8 +88,9 @@ void SortStrings(char** strings, int z) {
 	} while (f == 1);
 
 }
+// чтение файла 
 void read_file(char* name) {
-printf("имя файла:%s\n", name);
+    printf("имя файла:%s\n", name);
 	long long f_len;
 	
 	//scanf_s("%s", name);
@@ -98,7 +103,7 @@ printf("имя файла:%s\n", name);
 	//fclose(f);
 	char* estr; // на строку 
 	char* text; // буфер для чтения строки 
-	char* buf; // буфер для раделения на 
+	char* buf; // буфер для раделения 
 	char** text_2;
 	int str_len = 0;
 	
@@ -174,20 +179,20 @@ int main(int argc, char** argv) {
 	setlocale(LC_ALL, "Rus");
 	unsigned char name[NAME];
 	struct stat buff; // структура для получения данных файла 
-	if (argv[1]!='\0') {
+	if (argv[1]!='\0') {// проверяем заполнина ли командная строка 
 		strcpy_s(name, NAME, argv[1]);
 	}
 	else {
-		if (stat("filenames.txt", &buff)==-1)// проверка наличия файла 
+		if (stat("filenames.txt", &buff)==-1)// проверка наличия файла, если нет , то ввод с экрана 
 		{
 			printf("Ведите имя файла:");
 	        gets_s(name, 255);
 
 		}
-		else {
+		else { // иначе читать 
 			int f_len = 256;
 			
-			char* estr; // на строку 
+			char* estr; // для чтения строки из файла  
 			char text[256]; // для чтения имени файла 
 			int str_len = 0;
 			FILE* f;
