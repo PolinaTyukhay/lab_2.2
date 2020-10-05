@@ -23,7 +23,7 @@ int test_str_1(char* str_1, char* str_2) {
 	for (int i = 0; i < max_len - kol_pr; i++) {
 		
 		if (str_1[i] == '\0') {
-			return(0);
+			return(-1);
 		}
 		else if (str_2[i] == '\0') {
 			return(1);
@@ -32,7 +32,7 @@ int test_str_1(char* str_1, char* str_2) {
 			return(1);
 		}
 		else if (str_1[i] < str_2[i]) {
-			return(0);
+			return(-1);
 		}
 		kol_pr++;
 
@@ -41,52 +41,62 @@ int test_str_1(char* str_1, char* str_2) {
 	return(0);
 }
 // по длине строки 
-int test_str_3(char*  str_1, char*  str_2) {
-	int kol_pr = 0;
-	int max_1 = strlen(str_1);
-	int max_2 = strlen(str_2);
 
+int test_str_3( const void* str1, const void* str2) {
+	
+	char s1[256];
+	char s2[256];
+	strcpy_s(s1, 256, *(char**)str1);
+	strcpy_s(s2, 256, *(char**)str2);
+	
+	int max_1 = strlen(*(char**)str1);
+	int max_2 = strlen(*(char**)str2);
+	
+	//printf("%s\t%s\n", str_1, *(char**)str1);
+	//printf("%s\t %s\n", str_1, str_2);
 	if (max_1 > max_2) {
 		return(1);
 	}
 	else if (max_1 == max_2) {
-		return(test_str_1(str_1, str_2));
+		return(test_str_1(*(char**)str1, *(char**)str2));
 	}
 	else {
-		return(0);
+		return(-1);
 	}
 
 
 
 }
 // быстрая сортировка двумерного массива строк
-void SortStrings(char** strings, int z) {
+void SortStrings(char* strings[], int z) {
 
 	
-	int k = 0;
-	char*  temp ;
-	int f = 1;
-	int max_1 = 0;
-	int max_2 = 0;
-	do {
-		f = 0;
-		for (int i = 1; i < z; i++) {
-			max_1 = strlen(strings[i - 1]);
-			max_2 = strlen(strings[i]);
-			//k = test_str(strings[i - 1], strings[i]);
-			k = test_str_3(strings[i - 1], strings[i]);
-			if (k == 1) {
-				temp = strings[i - 1]; // 
-				strings[i - 1] = strings[i];
-				strings[i] = temp;
-				
-				f = 1;
+	//int k = 0;
+	//char*  temp ;
+	//int f = 1;
+	//int max_1 = 0;
+	//int max_2 = 0;
+	//do {
+	//	f = 0;
+	//	for (int i = 1; i < z; i++) {
+	//		max_1 = strlen(strings[i - 1]);
+	//		max_2 = strlen(strings[i]);
+	//		//k = test_str(strings[i - 1], strings[i]);
+	//		k = test_str_3(strings[i - 1], strings[i]);
+	//		if (k == 1) {
+	//			temp = strings[i - 1]; // 
+	//			strings[i - 1] = strings[i];
+	//			strings[i] = temp;
+	//			
+	//			f = 1;
 
-			}
-		}
+	//		}
+	//	}
 
-	} while (f == 1);
-
+	//} while (f == 1);
+	
+	qsort(strings, z, sizeof(char*), test_str_3 );
+	
 }
 // чтение файла 
 void read_file(char* name) {
