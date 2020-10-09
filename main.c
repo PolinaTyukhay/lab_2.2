@@ -10,7 +10,7 @@
 // построчная печать
 void PrintStrings(char** strings, int K) {
 	for (int i = 0; i <K; i++) {
-		//printf("%d\t", i);
+		
 			printf("%s\n", strings[i]);
 		
 	}
@@ -42,23 +42,18 @@ int test_str_1(char* str_1, char* str_2) {
 }
 // по длине строки 
 
-int test_str_3( const void* str1, const void* str2) {
+int test_str_3( char* str1, char* str2) {
 	
-	char s1[256];
-	char s2[256];
-	strcpy_s(s1, 256, *(char**)str1);
-	strcpy_s(s2, 256, *(char**)str2);
 	
-	int max_1 = strlen(*(char**)str1);
-	int max_2 = strlen(*(char**)str2);
+	int max_1 = strlen(str1);
+	int max_2 = strlen(str2);
 	
-	//printf("%s\t%s\n", str_1, *(char**)str1);
-	//printf("%s\t %s\n", str_1, str_2);
+	
 	if (max_1 > max_2) {
 		return(1);
 	}
 	else if (max_1 == max_2) {
-		return(test_str_1(*(char**)str1, *(char**)str2));
+		return(test_str_1(str1,str2));
 	}
 	else {
 		return(-1);
@@ -67,50 +62,52 @@ int test_str_3( const void* str1, const void* str2) {
 
 
 }
+
 // быстрая сортировка двумерного массива строк
-void SortStrings(char* strings[], int z) {
+void qsort_t(char* strings[],int b, int e)
+{
+	int l = b, r = e;
+	char* temp;
+    char* piv =strings [(l + r) / 2];// Опорным элементом для примера возьмём средний
+	while (l <= r)
+	{
+		while (test_str_3(strings[l] , piv)<0) {
 
-	
-	//int k = 0;
-	//char*  temp ;
-	//int f = 1;
-	//int max_1 = 0;
-	//int max_2 = 0;
-	//do {
-	//	f = 0;
-	//	for (int i = 1; i < z; i++) {
-	//		max_1 = strlen(strings[i - 1]);
-	//		max_2 = strlen(strings[i]);
-	//		//k = test_str(strings[i - 1], strings[i]);
-	//		k = test_str_3(strings[i - 1], strings[i]);
-	//		if (k == 1) {
-	//			temp = strings[i - 1]; // 
-	//			strings[i - 1] = strings[i];
-	//			strings[i] = temp;
-	//			
-	//			f = 1;
+			l++;
+		}
+			
+		while (test_str_3(strings[r], piv)>0) {
+			r--;
+		}
+		if (l <= r) {
+			temp = strings[l]; 
+			strings[l] = strings[r];
+			strings[r] = temp;
+			l++;
+			r--;
+		}
+	}
+	if (b < r) {
+		qsort_t(strings, b, r);
+	}
+	if (e > l) {
+		qsort_t(strings, l, e);
+	}
+}   
 
-	//		}
-	//	}
 
-	//} while (f == 1);
-	
-	qsort(strings, z, sizeof(char*), test_str_3 );
-	
-}
 // чтение файла 
 void read_file(char* name) {
     printf("имя файла:%s\n", name);
 	long long f_len;
 	
-	//scanf_s("%s", name);
-	//printf("%s\n", name);
+	
 	FILE* f;
 	fopen_s(&f, name, "rt");
 	fseek(f, 0, SEEK_END);
 	f_len = ftell(f);
 	fseek(f, 0, SEEK_SET);
-	//fclose(f);
+	
 	char* estr; // на строку 
 	char* text; // буфер для чтения строки 
 	char* buf; // буфер для раделения 
@@ -153,7 +150,7 @@ void read_file(char* name) {
 		
 	
 		strcpy_s(buf, str_len+1, text);
-		//printf("%d  %s",str_len, buf);
+		
 		if (buf[str_len-1]=='\n') {
 			buf[str_len-1] = '\0';
 		}
@@ -175,7 +172,7 @@ void read_file(char* name) {
 	
 	fclose(f);
 
-	SortStrings(text_2,  i);
+	qsort_t(text_2, 0, i - 1); 
 	PrintStrings(text_2, i);
 	for (int d = 0; d < i; d++) {
 		free(text_2[d]);
